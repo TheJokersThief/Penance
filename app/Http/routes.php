@@ -25,17 +25,14 @@ Route::get('/', function () {
 | kernel and includes session state, CSRF protection, and more.
 |
 */
-
 Route::group(['middleware' => ['web']], function () {
-	Route::controllers([
-		'auth' => 'Auth\AuthController',
-		'password' => 'Auth\PasswordController',
-	]);
-
-    Route::resource('list', 'ListController', [ 'only' => ['store', 'show', 'edit', 'index', 'create'] ]);
+	Route::auth();
+	Route::group(['middleware' => ['auth']], function( ){
+		Route::resource('list', 'ListController', [ 'only' => ['store', 'show', 'edit', 'index', 'create'] ]);
+	});
 });
 
-Route::group(['middleware' => ['api']], function( ){
+Route::group(['middleware' => ['api', 'auth']], function( ){
 	Route::resource('task', 'TaskController', [ 'only' => ['store', 'update', 'destroy'] ] );
 	Route::resource('list', 'ListController', [ 'only' => ['update', 'destroy'] ]);
 });
