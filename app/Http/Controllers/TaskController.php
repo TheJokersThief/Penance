@@ -54,6 +54,7 @@ class TaskController extends Controller
 			if( $list->user->id == Auth::user()->id ){
 				// If the user who sent the message owns the list
 				
+				$data['done'] = false;
 				$task = Task::create($data);
 				if( $task ){
 					// If task creation succeeded
