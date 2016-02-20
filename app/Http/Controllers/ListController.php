@@ -89,5 +89,24 @@ class ListController extends Controller
     public function destroy($id)
     {
         //
+
+    /**
+     * Check that slug is unique
+     * @param  string  $slug      
+     * @param  boolean $userScope  (Whether to limit uniqueness to username)
+     * @return boolean/string
+     */
+    private function checkSlug( $slug, $userScope = true ){
+        if( $userScope ){
+            $lists = List::where('slug', $value)->where('user_id', Auth::user()->id)->get();
+        } else {
+            $lists =List::where('slug', $value)->get();
+        }
+
+        if( empty( $lists ) ){
+            return true;
+        } else {
+            return $this->errorMessages['slug_not_unique'];
+        }
     }
 }

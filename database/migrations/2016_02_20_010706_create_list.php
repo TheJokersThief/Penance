@@ -17,6 +17,7 @@ class CreateList extends Migration
             $table->string('title')->index();
             $table->string('slug')->index();
             $table->integer('user_id')->unsigned();
+            $table->boolean('global');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
