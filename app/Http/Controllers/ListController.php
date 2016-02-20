@@ -47,7 +47,7 @@ class ListController extends Controller
     public function index()
     {
         $lists = Auth::user()->lists;
-        return View::make('lists.index')->('lists', $lists);
+        return View::make('lists.index')->with('lists', $lists);
     }
 
     /**
@@ -171,11 +171,11 @@ class ListController extends Controller
             $list = TaskList::find( $id );
             $list->update( $data );
 
-            return Response::json([ 'success' => $this->successMessages['list_updated'] ])
+            return Response::json([ 'success' => $this->successMessages['list_updated'] ]);
         } catch (DecryptException $e) {
             return Response::json([ 'error' => $this->errorMessages['invalid_list_id'] ]);
         } catch (ModelNotFoundException $e){
-            return Response::json([ 'error' => $this->errorMessages['']])
+            return Response::json([ 'error' => $this->errorMessages['list_not_found']]);
         }
     }
 
@@ -194,7 +194,7 @@ class ListController extends Controller
         } catch (DecryptException $e) {
             return Response::json([ 'error' => $this->errorMessages['invalid_list_id'] ]);
         } catch (ModelNotFoundException $e){
-            return Response::json([ 'error' => $this->errorMessages['']])
+            return Response::json([ 'error' => $this->errorMessages['list_not_found']]);
         }
     }
 
