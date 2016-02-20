@@ -25,7 +25,7 @@
 
                         <div class="input-field col s12">
                           <input type="text" name="name" value="{{ old('name') }}">
-                          <label for="name" data-error="Error">Name</label>
+                          <label for="name" data-error="Error">Username</label>
                         </div>
 
                         <div class="input-field col s12">
