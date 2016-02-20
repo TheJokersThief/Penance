@@ -6,15 +6,18 @@
 
 @section('content')
 	@if( Auth::check() )
-		<div class="row">
+		<div class="row lists">
 			<div class="col s12 m8 offset-m2 l6 offset-l3">
-				<ul class="collection with-header">
-			        <li class="collection-header"><h4>Your Lists</h4></li>
+				<ul class="collection with-header z-depth-1">
+			        <li class="collection-header valign-wrapper">
+			        	<h4>Your Lists</h4>
+						<a href="{{ URL::route('list.create') }}" class="btn-floating waves-effect waves-light secondary-content"><i class="material-icons">add</i></a>
+			        </li>
 			        @forelse( Auth::user()->lists as $list )
 			        	<li class="collection-item">
 			        		<div>
 			        			{{ $list->title }}
-			        			<a href="#!" class="secondary-content"><i class="material-icons">send</i></a>
+			        			<a href="{{ URL::route('list.show', $list->id ) }}" class="secondary-content"><i class="material-icons">send</i></a>
 			        		</div>
 			        	</li>
 			        @empty
@@ -84,7 +87,7 @@
 
 	                        <div class="input-field col s12">
 	                          <input type="text" name="name" value="{{ old('name') }}">
-	                          <label for="name" data-error="Error">Name</label>
+	                          <label for="name" data-error="Error">Username</label>
 	                        </div>
 
 	                        <div class="input-field col s12">
