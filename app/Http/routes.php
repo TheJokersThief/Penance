@@ -27,5 +27,9 @@ Route::get('/', function () {
 */
 
 Route::group(['middleware' => ['web']], function () {
-    //
+    Route::resource('list', 'ListController');
+});
+
+Route::group(['middleware' => ['api']], function( ){
+	Route::resource('task', 'TaskController', ['only' => ['store', 'update', 'destroy'] ] );
 });
