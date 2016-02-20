@@ -17,9 +17,12 @@ Route::group(['middleware' => ['web']], function () {
 	    return view('welcome');
 	});
 
-	Route::group(['middleware' => ['auth']], function( ){
-		Route::resource('list', 'ListController', [ 'only' => ['store', 'show', 'edit', 'index', 'create'] ]);
-	});
+});
+
+Route::group(['middleware' => ['web', 'auth']], function( ){
+	Route::resource('list', 'ListController', [ 'only' => ['store', 'show', 'edit', 'index', 'create'] ]);
+	Route::get('/{slug}', ['as' => 'showBySlug', 'uses' => 'ListController@showBySlug']);
+	Route::get('/{username}/{slug}', ['as' => 'showByUserSlug', 'uses' => 'ListController@showByUserSlug']);
 });
 
 Route::group(['middleware' => ['api', 'auth']], function( ){
