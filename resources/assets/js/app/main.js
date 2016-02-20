@@ -1,12 +1,9 @@
 (function($){
   $(function(){
 
-    $('.button-collapse').sideNav();
-    $('.parallax').parallax();
-    $('.materialboxed').materialbox();
-    $('.carousel').carousel();
+  	$('.tooltipped').tooltip({delay: 50});
         
-
+  	// Smooth scroll for links on the current page
     $(document.body).on('click', 'a[href^="#"]', function (e) {
 		e.preventDefault();
 		if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') || location.hostname == this.hostname) {
@@ -26,8 +23,12 @@
 		}
 	});
 
-	setInterval(function(){
-		$('.carousel').carousel('next');
-	}, 2000);
+    // Allow toasts to be dismissed with a click
+	$(document).on('click', '#toast-container .toast', function() {
+	    $(this).fadeOut(function(){
+	        $(this).remove();
+	    });
+	});
+
   }); 
 })(jQuery);
