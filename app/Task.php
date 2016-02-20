@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
-class Task extends Authenticatable
+class Task extends Model
 {
 
     protected $fillable = [
@@ -12,6 +12,6 @@ class Task extends Authenticatable
     ];
 
     public function list( ){
-    	$this->belongsTo('App\List');
+    	return $this->belongsTo('App\TaskList');
     }
 }
