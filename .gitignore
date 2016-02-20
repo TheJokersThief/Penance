@@ -13,3 +13,7 @@ storage/
 .env
 .env.example
 composer.lock
+
+# CSS and JS (should be created through gulp)
+public/js
+public/css
