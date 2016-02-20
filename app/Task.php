@@ -11,7 +11,7 @@ class Task extends Model
         'description', 'list_id', 'done'
     ];
 
-    public function list( ){
+    public function tasklist( ){
     	return $this->belongsTo('App\TaskList');
     }
 }
