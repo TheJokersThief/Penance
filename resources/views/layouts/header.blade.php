@@ -16,3 +16,4 @@
 	@yield('extra-head')
 </head>
 <body class="@yield('body-class')">
+	<div class="body-wrapper @yield('wrapper-class')">

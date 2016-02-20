@@ -1,1 +1,24 @@
 @import (inline) 'materialize.min.css';
+
+html, body, .body-wrapper { height: 100%; }
+body > .body-wrapper { height: auto; min-height: 100%; width: 100%; }
+
+body{
+	background: url('../images/symphony.png');
+}
+
+ul.errors{
+	list-style-type: disc;
+	padding: 10px 40px;
+	li{
+		list-style-type: disc;
+		color: white;
+
+		&.first{
+		    list-style-type: none;
+		    margin-left: -20px;
+		}
+	}
+}
+
+@import "_auth.less";

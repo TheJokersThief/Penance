@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\User;
 use Validator;
 use Hash;
+use Auth;
+use Redirect;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -70,5 +72,14 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    /**
+     * Log out a user, removing cookie info
+     * @return Redirect
+     */
+    public function logout( ){
+        Auth::logout();
+        return Redirect::to('/');
     }
 }
