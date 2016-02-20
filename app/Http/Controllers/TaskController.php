@@ -10,7 +10,7 @@ use Validator;
 use Crypt;
 
 // Our Models
-use App\List;
+use App\TaskList;
 use App\Task;
 use App\User;
 
@@ -50,7 +50,7 @@ class TaskController extends Controller
 			// Decrypt List ID
 			$data['list_id'] = Crypt::decrypt($data['list_id']);
 
-			$list = List::find( $data['list_id'] );
+			$list = TaskList::find( $data['list_id'] );
 			if( $list->user->id == Auth::user()->id ){
 				// If the user who sent the message owns the list
 				

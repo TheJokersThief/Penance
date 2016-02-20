@@ -12,7 +12,7 @@ use Validator;
 use Crypt;
 
 // Our Models
-use App\List;
+use App\TaskList;
 use App\Task;
 use App\User;
 
@@ -91,7 +91,7 @@ class ListController extends Controller
 
         // Get user's ID and create the list
         $data['user_id'] = Auth::user()->id;
-        $list = List::create( $data );
+        $list = TaskList::create( $data );
 
         if( $list ){
             $request->session()->flash( 'success', $this->successMessages['list_created'] );
@@ -110,7 +110,7 @@ class ListController extends Controller
      */
     public function show($slug)
     {
-        $list = List::where('slug', $slug)->first();
+        $list = TaskList::where('slug', $slug)->first();
         return View::make('lists.show')->with('list', $list);
     }
 
@@ -125,7 +125,7 @@ class ListController extends Controller
         try {
 
             $id = Crypt::decrypt( $id );
-            $list = List::find( $id );
+            $list = TaskList::find( $id );
             return View::make('lists.show')->with('list', $list);
 
         } catch (DecryptException $e) {
@@ -168,7 +168,7 @@ class ListController extends Controller
 
             // Get user's ID and create the list
             $data['user_id'] = Auth::user()->id;
-            $list = List::find( $id );
+            $list = TaskList::find( $id );
             $list->update( $data );
 
             return Response::json([ 'success' => $this->successMessages['list_updated'] ])
@@ -189,7 +189,7 @@ class ListController extends Controller
     {
         try {
             $id = Crypt::decrypt( $id );
-            $list = List::find( $id );
+            $list = TaskList::find( $id );
             $list->delete();
         } catch (DecryptException $e) {
             return Response::json([ 'error' => $this->errorMessages['invalid_list_id'] ]);
@@ -206,9 +206,9 @@ class ListController extends Controller
      */
     private function checkSlug( $slug, $userScope = true ){
         if( $userScope ){
-            $lists = List::where('slug', $value)->where('user_id', Auth::user()->id)->get();
+            $lists = TaskList::where('slug', $value)->where('user_id', Auth::user()->id)->get();
         } else {
-            $lists =List::where('slug', $value)->get();
+            $lists =TaskList::where('slug', $value)->get();
         }
 
         if( empty( $lists ) ){
