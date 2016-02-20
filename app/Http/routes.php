@@ -32,9 +32,10 @@ Route::group(['middleware' => ['web']], function () {
 		'password' => 'Auth\PasswordController',
 	]);
 
-    Route::resource('list', 'ListController');
+    Route::resource('list', 'ListController', [ 'only' => ['store', 'show', 'edit', 'index', 'create'] ]);
 });
 
 Route::group(['middleware' => ['api']], function( ){
-	Route::resource('task', 'TaskController', ['only' => ['store', 'update', 'destroy'] ] );
+	Route::resource('task', 'TaskController', [ 'only' => ['store', 'update', 'destroy'] ] );
+	Route::resource('list', 'ListController', [ 'only' => ['update', 'destroy'] ]);
 });
