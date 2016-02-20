@@ -8,7 +8,7 @@ class List extends Authenticatable
 {
 
     protected $fillable = [
-        'title', 'slug', 'user_id',
+        'title', 'slug', 'user_id', 'global'
     ];
 
     public function user( ){

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+// Base includes
 use View;
 use Auth;
 use Response;
@@ -10,11 +11,34 @@ use Request;
 use Validator;
 use Crypt;
 
+// Our Models
+use App\List;
+use App\Task;
+use App\User;
+
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ListController extends Controller
 {
+
+    private $errorMessages = [
+        'incorrect_permissions' => 'You do not have permission to do this.',
+        'list_not_created'      => 'Something went wrong, list creation failed',
+        'invalid_list_id'       => 'That list ID is invalid',
+        'invalid_task_id'       => 'That task ID is invalid',
+        'list_not_found'        => 'We couldn\'t find that list, sorry',
+        'slug_not_unique'       => 'Your slug isn\'t unique!'
+    ];
+
+    private $successMessages =[
+        'list_created' => 'Your list was created successfully! Happy to-doing!',
+        'list_updated' => 'Task updated successfully!',
+        'list_deleted' => 'Task deleted successfully!'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +46,8 @@ class ListController extends Controller
      */
     public function index()
     {
-        //
+        $lists = Auth::user()->lists;
+        return View::make('lists.index')->('lists', $lists);
     }
 
     /**
@@ -32,7 +57,7 @@ class ListController extends Controller
      */
     public function create()
     {
-        //
+        return View::make('lists.create');
     }
 
     /**
@@ -43,7 +68,38 @@ class ListController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Only allow following fields to be submitted
+        $data = $request->only([ 'title', 'slug', 'global' ]);
+
+        // Validate all input
+        $validator = Validator::make( $data, [
+                    'title'  => 'required',
+                    'slug'   => 'alpha_dash|required'
+                ]);
+
+        $slugError = $this->checkSlug( $data['slug'], $data['global'] );
+
+        if( $validator->fails( ) || !$slugError === true ){
+            if( !$slugError === true ){
+                $validator->errors()->add('slug', $slugError);
+            }
+            // If validation fails, redirect back with errors
+            return Redirect::back( )
+                    ->withErrors( $validator )
+                    ->withInput( );
+        }
+
+        // Get user's ID and create the list
+        $data['user_id'] = Auth::user()->id;
+        $list = List::create( $data );
+
+        if( $list ){
+            $request->session()->flash( 'success', $this->successMessages['list_created'] );
+            return Redirect::route('list.show');
+        } else {
+            $request->session()->flash( 'error', $this->errorMessages['list_not_created'] );
+            return Redirect::back();
+        }
     }
 
     /**
@@ -52,9 +108,10 @@ class ListController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        //
+        $list = List::where('slug', $slug)->first();
+        return View::make('lists.show')->with('list', $list);
     }
 
     /**
@@ -65,7 +122,16 @@ class ListController extends Controller
      */
     public function edit($id)
     {
-        //
+        try {
+
+            $id = Crypt::decrypt( $id );
+            $list = List::find( $id );
+            return View::make('lists.show')->with('list', $list);
+
+        } catch (DecryptException $e) {
+            $request->session()->flash( 'error', $this->errorMessages['invalid_list_id'] );
+            return Redirect::back();
+        }
     }
 
     /**
@@ -76,8 +142,41 @@ class ListController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        //
+    { 
+
+        try {
+            $id = Crypt::decrypt( $id );
+            // Only allow following fields to be submitted
+            $data = $request->only([ 'title', 'slug', 'global' ]);
+
+            // Validate all input
+            $validator = Validator::make( $data, [
+                        'title'  => 'required',
+                        'slug'   => 'alpha_dash|required'
+                    ]);
+
+            $slugError = $this->checkSlug( $data['slug'], $data['global'] );
+
+            if( $validator->fails( ) || !$slugError === true ){
+                if( !$slugError === true ){
+                    // If our slug error exists, add it to the validator errors
+                    $validator->errors()->add('slug', $slugError);
+                }
+                // If validation fails, redirect back with errors
+                return Response::json( $validator->errors() );
+            }
+
+            // Get user's ID and create the list
+            $data['user_id'] = Auth::user()->id;
+            $list = List::find( $id );
+            $list->update( $data );
+
+            return Response::json([ 'success' => $this->successMessages['list_updated'] ])
+        } catch (DecryptException $e) {
+            return Response::json([ 'error' => $this->errorMessages['invalid_list_id'] ]);
+        } catch (ModelNotFoundException $e){
+            return Response::json([ 'error' => $this->errorMessages['']])
+        }
     }
 
     /**
@@ -88,7 +187,16 @@ class ListController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $id = Crypt::decrypt( $id );
+            $list = List::find( $id );
+            $list->delete();
+        } catch (DecryptException $e) {
+            return Response::json([ 'error' => $this->errorMessages['invalid_list_id'] ]);
+        } catch (ModelNotFoundException $e){
+            return Response::json([ 'error' => $this->errorMessages['']])
+        }
+    }
 
     /**
      * Check that slug is unique
