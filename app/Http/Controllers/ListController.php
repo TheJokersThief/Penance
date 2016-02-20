@@ -7,9 +7,10 @@ use View;
 use Auth;
 use Response;
 use Redirect;
-use Request;
+use Illuminate\Http\Request;
 use Validator;
 use Crypt;
+use Session;
 
 // Our Models
 use App\TaskList;
@@ -47,7 +48,7 @@ class ListController extends Controller
     public function index()
     {
         $lists = Auth::user()->lists;
-        return View::make('lists.index')->with('lists', $lists);
+        return view('lists.index')->with('lists', $lists);
     }
 
     /**
@@ -57,7 +58,7 @@ class ListController extends Controller
      */
     public function create()
     {
-        return View::make('lists.create');
+        return view('lists.create');
     }
 
     /**
@@ -71,6 +72,9 @@ class ListController extends Controller
         // Only allow following fields to be submitted
         $data = $request->only([ 'title', 'slug', 'global' ]);
 
+        // Checkbox transmits "on" if checked
+        $data['global'] = ($data['global'] == 'on' ? true : false );
+
         // Validate all input
         $validator = Validator::make( $data, [
                     'title'  => 'required',
@@ -79,9 +83,10 @@ class ListController extends Controller
 
         $slugError = $this->checkSlug( $data['slug'], $data['global'] );
 
-        if( $validator->fails( ) || !$slugError === true ){
-            if( !$slugError === true ){
-                $validator->errors()->add('slug', $slugError);
+        if( $validator->fails( ) || $slugError ){
+            if( $slugError ){
+                // If our slug error exists, add it to the validator errors
+                $validator->errors()->add('slug', $this->errorMessages['slug_not_unique']);
             }
             // If validation fails, redirect back with errors
             return Redirect::back( )
@@ -94,11 +99,9 @@ class ListController extends Controller
         $list = TaskList::create( $data );
 
         if( $list ){
-            $request->session()->flash( 'success', $this->successMessages['list_created'] );
-            return Redirect::route('list.show');
+            return redirect()->route('list.show', $list->id )->with( 'success', $this->successMessages['list_created'] );
         } else {
-            $request->session()->flash( 'error', $this->errorMessages['list_not_created'] );
-            return Redirect::back();
+            return Redirect::back()->withErrors( [$this->errorMessages['list_not_created']] );
         }
     }
 
@@ -108,10 +111,41 @@ class ListController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($slug)
+    public function show($id)
     {
-        $list = TaskList::where('slug', $slug)->first();
-        return View::make('lists.show')->with('list', $list);
+        $list = TaskList::find( $id );
+
+        if( $list->global ){
+            return redirect()->route('showBySlug', [$list->slug]);
+        } else{
+            return redirect()->route('showByUserSlug', [ 'slug' => $list->slug, 'username' => $list->user->name]);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showBySlug($slug)
+    {
+        $list = TaskList::where('slug', $slug)->where('global', true)->first();
+        return view('lists.show')->with('list', $list);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showByUserSlug($username, $slug)
+    {
+        $user = User::where('name', $username)->first();
+        $list = TaskList::where('slug', $slug)->where('user_id', $user->id)->first();
+
+        return view('lists.show')->with('list', $list);
     }
 
     /**
@@ -126,11 +160,10 @@ class ListController extends Controller
 
             $id = Crypt::decrypt( $id );
             $list = TaskList::find( $id );
-            return View::make('lists.show')->with('list', $list);
+            return view('lists.show')->with('list', $list);
 
         } catch (DecryptException $e) {
-            $request->session()->flash( 'error', $this->errorMessages['invalid_list_id'] );
-            return Redirect::back();
+            return back()->with( 'error', $this->errorMessages['invalid_list_id'] );
         }
     }
 
@@ -157,10 +190,10 @@ class ListController extends Controller
 
             $slugError = $this->checkSlug( $data['slug'], $data['global'] );
 
-            if( $validator->fails( ) || !$slugError === true ){
-                if( !$slugError === true ){
+            if( $validator->fails( ) || $slugError ){
+                if( $slugError ){
                     // If our slug error exists, add it to the validator errors
-                    $validator->errors()->add('slug', $slugError);
+                    $validator->errors()->add('slug', $this->errorMessages['slug_not_unique']);
                 }
                 // If validation fails, redirect back with errors
                 return Response::json( $validator->errors() );
@@ -201,20 +234,20 @@ class ListController extends Controller
     /**
      * Check that slug is unique
      * @param  string  $slug      
-     * @param  boolean $userScope  (Whether to limit uniqueness to username)
-     * @return boolean/string
+     * @param  boolean $global  (Whether to limit uniqueness to username)
+     * @return boolean
      */
-    private function checkSlug( $slug, $userScope = true ){
-        if( $userScope ){
-            $lists = TaskList::where('slug', $value)->where('user_id', Auth::user()->id)->get();
+    private function checkSlug( $slug, $global = true ){
+        if( !$global ){
+            $lists = TaskList::where('slug', $slug)->where('user_id', Auth::user()->id)->where('global', false)->get();
         } else {
-            $lists =TaskList::where('slug', $value)->get();
+            $lists = TaskList::where('slug', $slug)->where('global', true)->get();
         }
 
-        if( empty( $lists ) ){
-            return true;
+        if( $lists->isEmpty() ){
+            return false;
         } else {
-            return $this->errorMessages['slug_not_unique'];
+            return true;
         }
     }
 }
