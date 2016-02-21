@@ -31,6 +31,12 @@
 			  </li>
 
 			  <li>
+			  	<a href="{{ URL::route('list.create') }}" class="btn-floating orange lighten-2 tooltipped" data-position="bottom" data-delay="50" data-tooltip="Create New List">
+			  		<i class="material-icons">add</i>
+			  	</a>
+			  </li>
+
+			  <li>
 			  	<a href="{{ URL::route('list.index') }}" class="btn-floating green lighten-2 tooltipped" data-position="bottom" data-delay="50" data-tooltip="Your Lists">
 			  		<i class="material-icons">list</i>
 			  	</a>
