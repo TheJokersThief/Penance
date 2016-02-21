@@ -1,4 +1,4 @@
-# TodoList
+# Penance
 A todo list with memorable URLs.
 
 [![](public/images/preview.jpg)](https://youtu.be/Jhazf7LEzC8)
