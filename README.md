@@ -1,7 +1,9 @@
 # TodoList
 A todo list with memorable URLs.
 
-![](public/images/long-demo.gif)
+[![](public/images/preview.jpg)](https://youtu.be/Jhazf7LEzC8)
+
+[View a small demo here.](https://youtu.be/Jhazf7LEzC8)
 
 The application is a very simple todo app designed to let you choose the slug so you can access it easily later. It's built using Laravel and Knockout.js. The design framework is MaterializeCSS.
 
