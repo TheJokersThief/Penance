@@ -25,7 +25,8 @@ Route::group(['middleware' => ['web', 'auth']], function( ){
 	Route::get('/{username}/{slug}', ['as' => 'showByUserSlug', 'uses' => 'ListController@showByUserSlug']);
 });
 
-Route::group(['middleware' => ['api', 'auth']], function( ){
+Route::group(['middleware' => ['api', 'web'], 'prefix' => 'api'], function( ){
+	Route::get('list/{encryptedListID}/tasks', ['as' => 'api/list/tasks', 'uses' => 'TaskController@getTasks']);
 	Route::resource('task', 'TaskController', [ 'only' => ['store', 'update', 'destroy'] ] );
 	Route::resource('list', 'ListController', [ 'only' => ['update', 'destroy'] ]);
 });
