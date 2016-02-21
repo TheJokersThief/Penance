@@ -15,8 +15,15 @@
 		        @forelse( Auth::user()->lists as $list )
 		        	<li class="collection-item">
 		        		<div>
-		        			{{ $list->title }} @if( $list->global ) <em>(Global)</em> @endif
-		        			<a href="{{ URL::route('list.show', $list->id ) }}" class="secondary-content"><i class="material-icons">send</i></a>
+		        			<a href="{{ URL::route('list.show', $list->id ) }}" class="red-text text-lighten-2">{{ $list->title }}
+
+			        			@if( $list->global ) 
+	        						<em>({{ str_replace( URL::to('/'), '', URL::route('showBySlug', $list->slug) ) }})</em> 
+	        					@else
+	        						<em>({{ str_replace( URL::to('/'), '', URL::route('showByUserSlug', $list->slug, $list->user->name) ) }})</em>
+	        					@endif 
+        					</a>
+		        			<a href="{{ URL::route('list.show', $list->id ) }}" class="secondary-content"><i class="material-icons red-text text-lighten-2">send</i></a>
 		        		</div>
 		        	</li>
 		        @empty
