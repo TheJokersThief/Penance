@@ -34,6 +34,7 @@ function initTaskList( encrypted_list_id ){
 		        	self.tasks(response);
 		        	$('.loading').hide();
 		        	$('textarea').elastic();
+		        	self.processShowDone( );
 		        }
 			});
 		};
@@ -51,6 +52,7 @@ function initTaskList( encrypted_list_id ){
 		        },
 		        success: function( response ){
 		        	self.toastResponse( response );
+		        	self.update();
 		        }
 			});
 		}
@@ -159,7 +161,7 @@ function initTaskList( encrypted_list_id ){
 
 		self.copyToClipboard = function( ){
 			var element = '#URL';
-			
+
 			var $temp = $("<input>");
 			$("body").append($temp);
 			$temp.val($(element).text()).select();
@@ -170,7 +172,6 @@ function initTaskList( encrypted_list_id ){
 		}
 
 		self.update();
-		self.processShowDone( );
 	}
 	
 	ko.applyBindings(new TaskViewModel());
