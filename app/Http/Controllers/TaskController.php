@@ -132,4 +132,32 @@ class TaskController extends Controller
 			return Response::json([ 'error' => $this->errorMessages['invalid_task_id'] ]);
 		}
 	}
+
+	/**
+	 * Retrieve all the tasks for a list
+	 * @param  string $encryptedListID 
+	 * @return JSON
+	 */
+	public function getTasks( $encryptedListID ){
+		try {
+			$id = Crypt::decrypt( $encryptedListID );
+
+			$list = TaskList::find( $id );
+			$tasks = $list->tasks;
+			$counter = 0;
+			foreach ($tasks as $task) {
+				$tasks[ $counter ]->token = Crypt::encrypt( $task->id );
+				$counter++;
+			}
+			
+			return Response::json($tasks);
+
+		} catch (DecryptException $e) {
+			// If decryption fails, it's an invalid ID
+			return Response::json([ 'error' => $this->errorMessages['invalid_list_id'] ]);
+		}  catch (ModelNotFoundException $e) {
+			// If no task can be found, the task doesn't exist
+			return Response::json([ 'error' => $this->errorMessages['invalid_list_id'] ]);
+		}
+	}
 }
