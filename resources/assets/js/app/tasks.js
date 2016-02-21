@@ -1,11 +1,3 @@
-function deleteTask( encrypted_task_id ){
-	$.ajax({
-		url: 'api/task/'+encrypted_task_id,
-		type: 'DELETE',
-		cache: false
-	});
-}
-
 function initTaskList( encrypted_list_id ){
 
 	$('.new-task textarea').keydown(function(e){
@@ -111,6 +103,22 @@ function initTaskList( encrypted_list_id ){
 				        }
 					});
 				}
+			});
+		}
+
+		self.deleteTask = function( ){
+
+			$.ajax({
+				url: 'api/task/'+this.token,
+				type: 'DELETE',
+				cache: false,
+				beforeSend: function( ){
+					$('[taskid='+this.id+']').remove();
+				},
+				success: function( response ){
+		        	self.toastResponse( response );
+		        	self.update();
+		        }
 			});
 		}
 

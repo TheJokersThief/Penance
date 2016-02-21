@@ -31,7 +31,7 @@
                     <ul class="collection">
 
                         <!-- ko foreach: tasks -->
-                            <li class="collection-item">
+                            <li class="collection-item" data-bind="attr: {taskid: id}">
                                 <div class="col s2 ">
                                     <!-- ko if: (done == 1) -->
                                         <input type="checkbox" class="filled-in" data-bind="attr: {id:id}, event: {change: $parent.updateTask}, checkedValue: done, checked: done" />
@@ -41,10 +41,11 @@
                                         <input type="checkbox" class="filled-in" data-bind="attr: {id:id}, event: {change: $parent.updateTask}" />
                                     <!-- /ko -->
 
-                                    <label  data-bind="attr: {for:id}"></label>
+                                    <label data-bind="attr: {for:id}"></label>
                                 </div>
                                 <div class="col s10">
-                                    <textarea data-bind="value: description, event: {mouseup: $parent.stripLines, change: $parent.updateTask}" rows="1" ></textarea>
+                                    <a class="right waves-effect waves-light close-this red-text" data-bind="click: $parent.deleteTask">&times;</a>
+                                    <textarea data-bind="value: description, event: {mouseup: $parent.stripLines, change: $parent.updateTask}" rows="1" ></textarea> 
                                     <!-- <p data-bind="text: description"></p> -->
                                 </div>
                             </li>
