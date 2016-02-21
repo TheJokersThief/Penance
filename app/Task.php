@@ -8,10 +8,10 @@ class Task extends Model
 {
 
     protected $fillable = [
-        'description', 'list_id', 'done'
+        'description', 'task_list_id', 'done'
     ];
 
     public function tasklist( ){
-    	return $this->belongsTo('App\TaskList');
+    	return $this->belongsTo('App\TaskList', 'task_list_id', 'id');
     }
 }
