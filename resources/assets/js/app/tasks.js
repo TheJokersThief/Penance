@@ -47,7 +47,6 @@ function initTaskList( encrypted_list_id ){
 
 		self.updateTask = function( ){
 			var element = this;
-			console.log( "Changed" );
 			$.ajax({
 				url: 'api/task/'+element.id,
 				type: 'PUT',
@@ -150,7 +149,7 @@ function initTaskList( encrypted_list_id ){
 		}
 
 		self.update();
-		self.toggleShowDone( );
+		self.processShowDone( );
 	}
 	
 	ko.applyBindings(new TaskViewModel());
