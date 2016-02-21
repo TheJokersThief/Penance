@@ -18,7 +18,9 @@ function initTaskList( encrypted_list_id ){
 
 	function TaskViewModel() {
 		var self = this;
-		self.tasks = ko.observableArray([]);
+		self.throttleRate = 50; // How many milliseconds should updates be throttled
+
+		self.tasks = ko.observableArray([]).extend({ rateLimit: self.throttleRate });
 		self.lastNewTask = "";
 
 
@@ -35,7 +37,7 @@ function initTaskList( encrypted_list_id ){
 		        	self.tasks(response);
 		        	$('.loading').hide();
 		        	$('textarea').elastic();
-		        	self.processShowDone( );
+		        	setTimeout( function( ){ self.processShowDone( ) }, self.throttleRate );
 		        }
 			});
 		};
@@ -53,7 +55,6 @@ function initTaskList( encrypted_list_id ){
 		        },
 		        success: function( response ){
 		        	self.toastResponse( response );
-		        	self.update();
 		        }
 			});
 		}
