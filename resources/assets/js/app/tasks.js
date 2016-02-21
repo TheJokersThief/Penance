@@ -19,6 +19,7 @@ function initTaskList( encrypted_list_id ){
 	function TaskViewModel() {
 		var self = this;
 		self.tasks = ko.observableArray([]);
+		self.lastNewTask = "";
 
 
 		self.update = function(){
@@ -80,11 +81,11 @@ function initTaskList( encrypted_list_id ){
 			}
 		}
 
-		self.createTask = function( ){
-			
+		self.createTaskListener = function( ){
+
 			$('textarea').keydown(function(e){
 				var description = $('.new-task textarea').val();
-				if (e.keyCode == 13 && description != ''){
+				if (e.keyCode == 13 && description != self.lastNewTask && description != ''){
 					// Submit values when they press enter
 					e.preventDefault();
 					$.ajax({
@@ -103,6 +104,10 @@ function initTaskList( encrypted_list_id ){
 				        	$('.new-task textarea').val("");
 				        	self.toastResponse( response );
 				        	self.update();
+				        	$('html, body').animate({
+						        scrollTop: $(".new-task").offset().top
+						    }, 2000);
+						    self.lastNewTask = description;
 				        }
 					});
 				}
@@ -172,6 +177,7 @@ function initTaskList( encrypted_list_id ){
 		}
 
 		self.update();
+		self.createTaskListener();
 	}
 	
 	ko.applyBindings(new TaskViewModel());

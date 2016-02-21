@@ -59,7 +59,7 @@
 
                     <div class="new-task">
                         New Task:
-                        <textarea data-bind="event: {mouseup: createTask}" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Press enter to add new task"></textarea>
+                        <textarea class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Press enter to add new task"></textarea>
                     </div>
                 </div>
             </div>
