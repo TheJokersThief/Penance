@@ -8,6 +8,13 @@
 	}
 
 	.chip{
+
+		@media screen and (max-width: 600px){
+			&.url-chip{
+				font-size: 10px;
+			}
+		}
+
 		a{
 			color: rgba(0,0,0,0.6);
 		}
@@ -21,6 +28,8 @@
 
 	.collection-item{
 	    overflow: hidden;
+	    display:block;
+	    transition: all 2s;
 	}
 	ul li textarea{
 		border: none;

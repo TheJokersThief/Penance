@@ -19,7 +19,7 @@
 	<div class="body-wrapper @yield('wrapper-class')">
 
 	@if( Auth::check() )
-		<div class="fixed-action-btn horizontal click-to-toggle" style="top: 45px; right: 24px;">
+		<div class="fixed-action-btn horizontal click-to-toggle hide-on-small-only" style="top: 45px; right: 24px;">
 		    <a class="btn-floating btn-large teal lighten-2">
 		      <i class="large mdi-navigation-menu"></i>
 		    </a>
@@ -38,6 +38,31 @@
 
 			  <li>
 			  	<a href="{{ URL::route('list.index') }}" class="btn-floating green lighten-2 tooltipped" data-position="bottom" data-delay="50" data-tooltip="Your Lists">
+			  		<i class="material-icons">list</i>
+			  	</a>
+			  </li>
+		    </ul>
+		</div>
+
+		<div class="fixed-action-btn click-to-toggle hide-on-med-and-up" style="bottom: 45px; right: 24px;">
+		    <a class="btn-floating btn-large teal lighten-2">
+		      <i class="large mdi-navigation-menu"></i>
+		    </a>
+		    <ul>
+			  <li>
+			  	<a href="{{ URL::to('logout') }}" class="btn-floating red lighten-2 tooltipped" data-position="left" data-delay="50" data-tooltip="Logout">
+			  		<i class="material-icons">exit_to_app</i>
+			  	</a>
+			  </li>
+
+			  <li>
+			  	<a href="{{ URL::route('list.create') }}" class="btn-floating orange lighten-2 tooltipped" data-position="left" data-delay="50" data-tooltip="Create New List">
+			  		<i class="material-icons">add</i>
+			  	</a>
+			  </li>
+
+			  <li>
+			  	<a href="{{ URL::route('list.index') }}" class="btn-floating green lighten-2 tooltipped" data-position="left" data-delay="50" data-tooltip="Your Lists">
 			  		<i class="material-icons">list</i>
 			  	</a>
 			  </li>
