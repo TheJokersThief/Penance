@@ -12,23 +12,8 @@
 		        	<h4>Your Lists</h4>
 					<a href="{{ URL::route('list.create') }}" class="btn-floating waves-effect waves-light secondary-content"><i class="material-icons">add</i></a>
 		        </li>
-		        @forelse( Auth::user()->lists as $list )
-		        	<li class="collection-item">
-		        		<div>
-		        			<a href="{{ URL::route('list.show', $list->id ) }}" class="red-text text-lighten-2">{{ $list->title }}
 
-			        			@if( $list->global ) 
-	        						<em>({{ str_replace( URL::to('/'), '', URL::route('showBySlug', $list->slug) ) }})</em> 
-	        					@else
-	        						<em>({{ str_replace( URL::to('/'), '', URL::route('showByUserSlug', $list->slug, $list->user->name) ) }})</em>
-	        					@endif 
-        					</a>
-		        			<a href="{{ URL::route('list.show', $list->id ) }}" class="secondary-content"><i class="material-icons red-text text-lighten-2">send</i></a>
-		        		</div>
-		        	</li>
-		        @empty
-		        	<li class="collection-item">No lists yet :( <a href="{{ URL::route('list.create') }}">Create a new list?</a></li>
-		        @endforelse
+		        @each('collections.list', Auth::user()->lists, 'list', 'collections.list-empty')
 			</ul>
 		</div>
 	</div>

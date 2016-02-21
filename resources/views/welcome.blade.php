@@ -13,16 +13,7 @@
 			        	<h4>Your Lists</h4>
 						<a href="{{ URL::route('list.create') }}" class="btn-floating waves-effect waves-light secondary-content"><i class="material-icons">add</i></a>
 			        </li>
-			        @forelse( Auth::user()->lists as $list )
-			        	<li class="collection-item">
-			        		<div>
-			        			{{ $list->title }}
-			        			<a href="{{ URL::route('list.show', $list->id ) }}" class="secondary-content"><i class="material-icons">send</i></a>
-			        		</div>
-			        	</li>
-			        @empty
-			        	<li class="collection-item">No lists yet :( <a href="{{ URL::route('list.create') }}">Create a new list?</a></li>
-			        @endforelse
+			        @each('collections.list', Auth::user()->lists, 'list', 'collections.list-empty')
 				</ul>
 			</div>
 		</div>
