@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 // Base functions
 use Auth;
 use Response;
-use Request;
+use Illuminate\Http\Request;
 use Validator;
 use Crypt;
+use DB;
 
 // Our Models
 use App\TaskList;
@@ -48,9 +49,9 @@ class TaskController extends Controller
 		try {
 
 			// Decrypt List ID
-			$data['list_id'] = Crypt::decrypt($data['list_id']);
+			$data['task_list_id'] = Crypt::decrypt($data['list_id']);
 
-			$list = TaskList::find( $data['list_id'] );
+			$list = TaskList::find( $data['task_list_id'] );
 			if( $list->user->id == Auth::user()->id ){
 				// If the user who sent the message owns the list
 				
@@ -85,21 +86,22 @@ class TaskController extends Controller
 	{
 		$data = $request->only(['description', 'done']);
 		try {
-			$id = Crypt::decrypt( $id );
+			$task = Task::find( $id );
+			// DB::enableQueryLog();
+			// $task->tasklist;
+			// dd( DB::getQueryLog() );
 
-			try {
-				$task = Task::find( $id );
+			if( $task->tasklist->user->id == Auth::user()->id ){
 				// Update the task based on the supplied data
+				$data['done'] = ($data['done'] == "true" ? 1 : 0);
 				$task->update( $data );
 
 				return Response::json([ 'success' => $this->successMessages['task_updated'] ]);
-			} catch (ModelNotFoundException $e) {
-				// If no task can be found, the task doesn't exist
-				return Response::json([ 'error' => $this->errorMessages['invalid_task_id'] ]);
+			} else{
+				return Response::json([ 'error' => $this->errorMessages['incorrect_permissions']]);
 			}
-
-		} catch (DecryptException $e) {
-			// If decryption fails, it's an invalid ID
+		} catch (ModelNotFoundException $e) {
+			// If no task can be found, the task doesn't exist
 			return Response::json([ 'error' => $this->errorMessages['invalid_task_id'] ]);
 		}
 
