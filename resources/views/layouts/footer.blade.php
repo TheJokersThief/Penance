@@ -17,5 +17,9 @@
 		@endif
 	</script>
 
+	@if( Auth::check() )
+		<meta name="csrf-token" content="{{ csrf_token() }}">
+	@endif
+
 </body>
 </html>
