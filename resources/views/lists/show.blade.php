@@ -23,9 +23,9 @@
                         <a class="waves-effect waves-light chip right red lighten-2" id="hide-done" data-bind="click: toggleShowDone">Hide Done</a>
                     </div>     
                      @if( $list->global )
-                        <p class="chip"><a href="{{ $url = URL::route('showBySlug', $list->slug) }}">({{ $url }})</a></p>
+                        <p class="chip"><a data-bind="click: copyToClipboard" id="URL">{{ URL::route('showBySlug', $list->slug) }}</a></p>
                     @else
-                        <p class="chip"><a href="{{ $url = URL::route('showByUserSlug', $list->slug, $list->user->name) }}">(({{ $url }}))</a></p>
+                        <p class="chip"><a data-bind="click: copyToClipboard" id="URL">{{ URL::route('showByUserSlug', $list->slug, $list->user->name) }}</a></p>
                     @endif
 
                     <ul class="collection">

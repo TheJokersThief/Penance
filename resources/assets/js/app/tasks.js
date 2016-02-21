@@ -157,6 +157,18 @@ function initTaskList( encrypted_list_id ){
 			}
 		}
 
+		self.copyToClipboard = function( ){
+			var element = '#URL';
+			
+			var $temp = $("<input>");
+			$("body").append($temp);
+			$temp.val($(element).text()).select();
+			document.execCommand("copy");
+			$temp.remove();
+
+			Materialize.toast( "URL Copied!", 2000, 'blue lighten-2');
+		}
+
 		self.update();
 		self.processShowDone( );
 	}
