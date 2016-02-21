@@ -33,6 +33,7 @@ function initTaskList( encrypted_list_id ){
 		        success: function( response ){
 		        	self.tasks(response);
 		        	$('.loading').hide();
+		        	$('textarea').elastic();
 		        }
 			});
 		};
