@@ -1,11 +1,6 @@
 function initTaskList( encrypted_list_id ){
 
-	$('.new-task textarea').keydown(function(e){
-		if (e.keyCode == 13){
-			e.preventDefault( );
-		}
-	});
-
+	// Set a default state for hiding "done" items
 	if(typeof(Storage) !== "undefined") {
 	    var hide_done_setting = localStorage.getItem("hide_done");
 	    if( hide_done_setting == null ){
@@ -16,6 +11,9 @@ function initTaskList( encrypted_list_id ){
     	$('#show-done').hide();
 	}
 
+	/**
+	 * This is essentially a "List" model but fuck it
+	 */
 	function TaskViewModel() {
 		var self = this;
 		self.throttleRate = 50; // How many milliseconds should updates be throttled
@@ -23,7 +21,9 @@ function initTaskList( encrypted_list_id ){
 		self.tasks = ko.observableArray([]).extend({ rateLimit: self.throttleRate });
 		self.lastNewTask = "";
 
-
+		/**
+		 * Populate the observable array with all the tasks
+		 */
 		self.update = function(){
 			$.ajax({
 				url: 'api/list/'+encrypted_list_id+'/tasks',
@@ -42,6 +42,9 @@ function initTaskList( encrypted_list_id ){
 			});
 		};
 
+		/**
+		 * Update a task
+		 */
 		self.updateTask = function( ){
 			var element = this;
 			$.ajax({
@@ -59,6 +62,9 @@ function initTaskList( encrypted_list_id ){
 			});
 		}
 
+		/**
+		 * Remove new lines from copied data
+		 */
 		self.stripLines = function( ){
 			// Prevent newlines in our tasks
 			$('textarea').keyup(function(){ 
@@ -72,6 +78,10 @@ function initTaskList( encrypted_list_id ){
 			});
 		}
 
+		/**
+		 * Create a toast message when a response comes in
+		 * @param  {object} response
+		 */
 		self.toastResponse = function( response ){
 			if( response.success ){
 				Materialize.toast( response.success, 1000, 'green lighten-2');
@@ -82,13 +92,17 @@ function initTaskList( encrypted_list_id ){
 			}
 		}
 
+		/**
+		 * Listen for an "enter" press on the create task textarea
+		 */
 		self.createTaskListener = function( ){
 
 			$('textarea').keydown(function(e){
 				if (e.keyCode == 13){
+					// If key is "enter"
 					var description = $('.new-task textarea').val();
 					if ( description != self.lastNewTask && description != ''){
-						// Submit values when they press enter
+						// If description is not duplicate of last and isn't empty
 						e.preventDefault();
 						$.ajax({
 							url: 'api/task',
@@ -100,17 +114,25 @@ function initTaskList( encrypted_list_id ){
 					        	"list_id"  : encrypted_list_id
 					        },
 					        beforeSend: function( ){
+					        	// Show the loading bar
 					        	$('.loading').show();
 					        },
 					        success: function( response ){
+					        	// Reset the new task textarea
 					        	$('.new-task textarea').val("");
+					        	// Give the user some feedback on the request
 					        	self.toastResponse( response );
+
+					        	$('.loading').hide();
+					        	// Push the new task onto the list
 					        	self.tasks.push( response.task );
+
+					        	// Scroll back to the textarea
 					        	$('html, body').animate({
 							        scrollTop: $(".new-task").offset().top
 							    }, 2000);
+
 							    self.lastNewTask = description;
-							    $('.loading').hide();
 					        }
 						});
 					}
@@ -118,6 +140,9 @@ function initTaskList( encrypted_list_id ){
 			});
 		}
 
+		/**
+		 * Delete a task
+		 */
 		self.deleteTask = function( ){
 
 			$.ajax({
@@ -125,6 +150,8 @@ function initTaskList( encrypted_list_id ){
 				type: 'DELETE',
 				cache: false,
 				beforeSend: function( ){
+					// To compensate for transmission delay,
+					// remove the task before it's actually removed
 					$('[taskid='+this.id+']').remove();
 				},
 				success: function( response ){
@@ -134,6 +161,9 @@ function initTaskList( encrypted_list_id ){
 			});
 		}
 
+		/**
+		 * Determine whether to hide or show "done" items
+		 */
 		self.processShowDone = function( ){
 			if(typeof(Storage) !== "undefined") {
 				var hide_done_setting = localStorage.getItem("hide_done");
@@ -150,6 +180,9 @@ function initTaskList( encrypted_list_id ){
 			}
 		}
 
+		/**
+		 * Toggle whether to show "done" items
+		 */
 		self.toggleShowDone = function( ){
 			if(typeof(Storage) !== "undefined") {
 				var hide_done_setting = localStorage.getItem("hide_done");
@@ -168,6 +201,10 @@ function initTaskList( encrypted_list_id ){
 			}
 		}
 
+		/**
+		 * Copy the list's URL to the clipboard
+		 * @return {[type]} [description]
+		 */
 		self.copyToClipboard = function( ){
 			var element = '#URL';
 
@@ -180,9 +217,12 @@ function initTaskList( encrypted_list_id ){
 			Materialize.toast( "URL Copied!", 2000, 'blue lighten-2');
 		}
 
+		// Populate the list
 		self.update();
+		// Start listening for task creation
 		self.createTaskListener();
 	}
 	
+	// Apply this wonderful model to our view
 	ko.applyBindings(new TaskViewModel());
 }
