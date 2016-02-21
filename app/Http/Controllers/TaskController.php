@@ -59,7 +59,7 @@ class TaskController extends Controller
 				$task = Task::create($data);
 				if( $task ){
 					// If task creation succeeded
-					return Response::json( [ 'success' => $this->successMessages['task_created'] ] );
+					return Response::json( [ 'success' => $this->successMessages['task_created'], 'task' => $task ] );
 				} else {
 					// If task creation failed
 					return Response::json([ 'error' => $this->errorMessages['task_not_created'] ]);

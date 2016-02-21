@@ -73,7 +73,7 @@ function initTaskList( encrypted_list_id ){
 
 		self.toastResponse = function( response ){
 			if( response.success ){
-				Materialize.toast( response.success, 2000, 'green lighten-2');
+				Materialize.toast( response.success, 1000, 'green lighten-2');
 			}
 
 			if( response.error ){
@@ -84,32 +84,35 @@ function initTaskList( encrypted_list_id ){
 		self.createTaskListener = function( ){
 
 			$('textarea').keydown(function(e){
-				var description = $('.new-task textarea').val();
-				if (e.keyCode == 13 && description != self.lastNewTask && description != ''){
-					// Submit values when they press enter
-					e.preventDefault();
-					$.ajax({
-						url: 'api/task',
-						type: 'post',
-						cache: false,
-						dataType: 'json',
-				        data: {
-				        	"description" : description,
-				        	"list_id"  : encrypted_list_id
-				        },
-				        beforeSend: function( ){
-				        	$('.loading').show();
-				        },
-				        success: function( response ){
-				        	$('.new-task textarea').val("");
-				        	self.toastResponse( response );
-				        	self.update();
-				        	$('html, body').animate({
-						        scrollTop: $(".new-task").offset().top
-						    }, 2000);
-						    self.lastNewTask = description;
-				        }
-					});
+				if (e.keyCode == 13){
+					var description = $('.new-task textarea').val();
+					if ( description != self.lastNewTask && description != ''){
+						// Submit values when they press enter
+						e.preventDefault();
+						$.ajax({
+							url: 'api/task',
+							type: 'post',
+							cache: false,
+							dataType: 'json',
+					        data: {
+					        	"description" : description,
+					        	"list_id"  : encrypted_list_id
+					        },
+					        beforeSend: function( ){
+					        	$('.loading').show();
+					        },
+					        success: function( response ){
+					        	$('.new-task textarea').val("");
+					        	self.toastResponse( response );
+					        	self.tasks.push( response.task );
+					        	$('html, body').animate({
+							        scrollTop: $(".new-task").offset().top
+							    }, 2000);
+							    self.lastNewTask = description;
+							    $('.loading').hide();
+					        }
+						});
+					}
 				}
 			});
 		}
