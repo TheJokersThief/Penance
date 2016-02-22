@@ -26,12 +26,12 @@
 
                         <div class="input-field col s12">
                           <input type="text" name="title" value="{{ old('title') }}">
-                          <label for="title">Text</label>
+                          <label for="title">List Title</label>
                         </div>
 
                         <div class="input-field col s12">
                           <input type="text" name="slug" value="{{ old('slug') }}">
-                          <label for="slug">Slug (alphanumeric only)</label>
+                          <label for="slug">Slug (alphanumeric only) <i class="material-icons right tooltipped" data-position="top" data-delay="50" data-tooltip="A slug is the human-readable part of the URL. The slug for 'http://todo.netsoc.co/todo' is 'todo' or for 'http://todo.netsoc.co/evan/todo' is also 'todo'.">info</i></label>
                         </div>
 
                         <div class="col s12 m6">
