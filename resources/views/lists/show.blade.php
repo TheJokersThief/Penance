@@ -25,7 +25,7 @@
                      @if( $list->global )
                         <p class="chip url-chip"><a data-bind="click: copyToClipboard" id="URL">{{ URL::route('showBySlug', $list->slug) }}</a></p>
                     @else
-                        <p class="chip url-chip"><a data-bind="click: copyToClipboard" id="URL">{{ URL::route('showByUserSlug', $list->slug, $list->user->name) }}</a></p>
+                        <p class="chip url-chip"><a data-bind="click: copyToClipboard" id="URL">{{ URL::route('showByUserSlug', [$list->slug, $list->user->name]) }}</a></p>
                     @endif
 
                     <ul class="collection">

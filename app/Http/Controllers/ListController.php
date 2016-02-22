@@ -142,6 +142,9 @@ class ListController extends Controller
      */
     public function showByUserSlug($username, $slug)
     {
+        if( $username == "images" ){
+            return redirect('/');
+        }
         $user = User::where('name', $username)->first();
         $list = TaskList::where('slug', $slug)->where('user_id', $user->id)->first();
 

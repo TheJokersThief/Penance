@@ -26,7 +26,7 @@ function initTaskList( encrypted_list_id ){
 		 */
 		self.update = function(){
 			$.ajax({
-				url: 'api/list/'+encrypted_list_id+'/tasks',
+				url: '/api/list/'+encrypted_list_id+'/tasks',
 				type: 'GET',
 				cache: false,
 				dataType: 'json',
@@ -48,7 +48,7 @@ function initTaskList( encrypted_list_id ){
 		self.updateTask = function( ){
 			var element = this;
 			$.ajax({
-				url: 'api/task/'+element.id,
+				url: '/api/task/'+element.id,
 				type: 'PUT',
 				cache: false,
 				dataType: 'json',
@@ -105,7 +105,7 @@ function initTaskList( encrypted_list_id ){
 						// If description is not duplicate of last and isn't empty
 						e.preventDefault();
 						$.ajax({
-							url: 'api/task',
+							url: '/api/task',
 							type: 'post',
 							cache: false,
 							dataType: 'json',
@@ -146,7 +146,7 @@ function initTaskList( encrypted_list_id ){
 		self.deleteTask = function( ){
 
 			$.ajax({
-				url: 'api/task/'+this.token,
+				url: '/api/task/'+this.token,
 				type: 'DELETE',
 				cache: false,
 				beforeSend: function( ){
