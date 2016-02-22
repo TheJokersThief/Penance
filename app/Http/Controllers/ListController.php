@@ -130,7 +130,15 @@ class ListController extends Controller
      */
     public function showBySlug($slug)
     {
-        $list = TaskList::where('slug', $slug)->where('global', true)->first();
+        
+        try {
+            $list = TaskList::where('slug', $slug)->where('global', true)->firstOrFail();
+        } catch (ModelNotFoundException $e) {
+            abort(404);
+        } catch( ErrorException $e ){
+            abort( 500 );
+        }
+
         return view('lists.show')->with('list', $list);
     }
 
@@ -142,11 +150,17 @@ class ListController extends Controller
      */
     public function showByUserSlug($username, $slug)
     {
-        if( $username == "images" ){
-            return redirect('/');
+        try {
+            if( $username == "images" ){
+                return redirect('/');
+            }
+            $user = User::where('name', $username)->firstOrFail();
+            $list = TaskList::where('slug', $slug)->where('user_id', $user->id)->firstOrFail();    
+        } catch (ModelNotFoundException $e) {
+            abort(404);
+        } catch( ErrorException $e ){
+            abort( 500 );
         }
-        $user = User::where('name', $username)->first();
-        $list = TaskList::where('slug', $slug)->where('user_id', $user->id)->first();
 
         return view('lists.show')->with('list', $list);
     }
