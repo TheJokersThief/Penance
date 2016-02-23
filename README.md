@@ -16,6 +16,9 @@ It's currently hosted on the [UCC Netsoc](https://github.com/UCCNetworkingSociet
 # Clone the repo into your current directory
 git clone https://github.com/TheJokersThief/TodoList.git .
 
+# Configure your application by editing the .env file
+cp .env.example .env
+
 # Create some basic folders excluded in the .gitignore for dev reasons
 mkdir bootstrap/cache
 mkdir storage/framework
