@@ -35,9 +35,12 @@ function initTaskList( encrypted_list_id ){
 		        },
 		        success: function( response ){
 		        	self.tasks(response);
-		        	$('.loading').hide();
-		        	$('textarea').elastic();
-		        	setTimeout( function( ){ self.processShowDone( ) }, self.throttleRate );
+		        	setTimeout( function( ){
+		        		// Delay execution of the following to match throttle delay
+		        		$('.loading').hide();
+			        	$('textarea').elastic();
+		        		self.processShowDone( ) 
+		        	}, self.throttleRate );
 		        }
 			});
 		};
