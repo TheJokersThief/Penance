@@ -256,8 +256,10 @@ class ListController extends Controller
      */
     private function checkSlug( $slug, $global = true ){
         if( !$global ){
+            // If list isn't global, search under username
             $lists = TaskList::where('slug', $slug)->where('user_id', Auth::user()->id)->where('global', false)->get();
         } else {
+            // Else, search all slugs
             $lists = TaskList::where('slug', $slug)->where('global', true)->get();
         }
 
