@@ -132,7 +132,7 @@ function initTaskList( encrypted_list_id ){
 					        	setTimeout( function( ){
 					        		// Delay execution of the following to match throttle delay
 					        		$('.loading').hide();
-						        	$('textarea').elastic();
+						        	$('.collection-item textarea').elastic();
 					        	}, self.throttleRate );
 
 					        	// Scroll back to the textarea
