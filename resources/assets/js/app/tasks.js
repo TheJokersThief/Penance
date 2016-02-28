@@ -126,9 +126,14 @@ function initTaskList( encrypted_list_id ){
 					        	// Give the user some feedback on the request
 					        	self.toastResponse( response );
 
-					        	$('.loading').hide();
 					        	// Push the new task onto the list
 					        	self.tasks.push( response.task );
+
+					        	setTimeout( function( ){
+					        		// Delay execution of the following to match throttle delay
+					        		$('.loading').hide();
+						        	$('textarea').elastic();
+					        	}, self.throttleRate );
 
 					        	// Scroll back to the textarea
 					        	$('html, body').animate({
