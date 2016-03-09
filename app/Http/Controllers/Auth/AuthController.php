@@ -82,4 +82,14 @@ class AuthController extends Controller
         Auth::logout();
         return Redirect::to('/');
     }
+
+    /**
+     * Action to be performed AFTER a user has been authenticated
+     * and logged in
+     * @param  Request $request
+     * @return redirect           Back to whence they came from
+     */
+    protected function authenticated( Request $request ){
+        return redirect()->back();
+    }
 }
